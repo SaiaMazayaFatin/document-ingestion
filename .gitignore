@@ -1,0 +1,84 @@
+# Environment & credentials
+.env
+.env.* 
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyw
+.python-version
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+wheels/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.cache/
+
+# Type check / lint caches
+.mypy_cache/
+.pytype/
+.ruff_cache/
+.dmypy.json
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+venv./
+.venv/
+.envs/
+.env_backup/
+
+# IDE / editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs / runtime artifacts
+logs/
+*.log
+
+# Data & generated media
+data/
+!data/README.md           # (buat README.md kosong agar folder tetap ada)
+*.16k.wav
+*.chunk*.wav
+*.tmp
+tmp/
+temp/
+
+# Model / embedding / HF caches
+huggingface/
+.huggingface/
+.cache/huggingface/
+transformers_cache/
+sentence_transformers/
+
+# Qdrant / vector store local snapshot (jika pakai local qdrant)
+qdrant_storage/
+qdrant/ 
+
+# OS / misc
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Coverage / reports
+reports/
+report/
+
+# Misc artifacts
+*.swp
+*.orig
+*.bak

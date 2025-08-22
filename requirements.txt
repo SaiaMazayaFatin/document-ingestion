@@ -1,0 +1,31 @@
+# LangChain (modern split packages)
+langchain==0.3.*
+langchain-core==0.3.*
+langchain-openai==0.2.*
+langchain-huggingface==0.1.*
+langchain-text-splitters==0.3.*
+langgraph==0.2.*
+
+# Models & audio
+transformers>=4.42.0
+torch>=2.2.0
+datasets>=2.19.0
+librosa>=0.10.2
+soundfile>=0.12.1
+pydub>=0.25.1
+
+# Vector DB
+qdrant-client>=1.9.2
+langchain-qdrant>=0.1.2
+
+# Graph DB
+neo4j>=5.20.0
+
+# SQL
+SQLAlchemy>=2.0.30
+psycopg2-binary>=2.9.9
+
+# Utils
+python-dotenv>=1.0.1
+pydantic>=2.8.2
+numpy>=1.26.4
