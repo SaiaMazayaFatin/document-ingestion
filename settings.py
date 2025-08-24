@@ -1,4 +1,5 @@
-from pydantic import BaseSettings, Field
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -29,6 +30,8 @@ class Settings(BaseSettings):
     # =========================
     SAMPLE_RATE: int = Field(default=16000)
     WINDOW_SECONDS: int = Field(default=30)  # Whisper window 30s
+    AUDIO_OVERLAP_SECONDS: int = Field(default=2)  # overlap antar segmen untuk konteks kalimat
+    STT_MAX_WORKERS: int = Field(default=2)  # paralelisme transkripsi segmen
 
     # =========================
     # Paths (staging data)
@@ -43,7 +46,8 @@ class Settings(BaseSettings):
     # =========================
     QDRANT_URL: str = Field(default="http://localhost:6333")
     QDRANT_API_KEY: str | None = Field(default=None)
-    QDRANT_COLLECTION: str = Field(default="rag_text_main")
+    # Default collection diselaraskan dengan compose/README (rag_audio_chunks)
+    QDRANT_COLLECTION: str = Field(default="rag_audio_chunks")
 
     # =========================
     # Graph DB (Neo4j)
@@ -61,6 +65,14 @@ class Settings(BaseSettings):
     # OpenAI
     # =========================
     OPENAI_API_KEY: str
+
+    # =========================
+    # Feature Flags (enable/disable subsystems quickly)
+    # =========================
+    ENABLE_SQL: bool = Field(default=True)
+    ENABLE_QDRANT: bool = Field(default=True)
+    ENABLE_NEO4J: bool = Field(default=True)
+    ENABLE_EXTRACTION: bool = Field(default=True)  # extraction + graph DB
 
     class Config:
         env_file = ".env"

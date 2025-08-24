@@ -1,8 +1,8 @@
 from __future__ import annotations
-from typing import Sequence, Optional
+from typing import Sequence, Optional, List
 
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, VectorParams
+from qdrant_client.http import models as qmodels
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from langchain_core.documents import Document
@@ -14,34 +14,35 @@ def init_qdrant() -> QdrantClient:
     """
     Ensure Qdrant collection exists (text vectors only, 1024-d, cosine).
     """
-    client = QdrantClient(url=settings.QDRANT_URL, api_key=settings.QDRANT_API_KEY)
+    client = QdrantClient(
+        url=settings.QDRANT_URL, 
+        api_key=settings.QDRANT_API_KEY,
+        verify=False,  # Skip SSL verification if needed
+        check_compatibility=False  # Skip version compatibility check
+    )
 
     try:
         client.get_collection(settings.QDRANT_COLLECTION)
     except Exception:
-        client.recreate_collection(
+        client.create_collection(
             collection_name=settings.QDRANT_COLLECTION,
-            vectors_config=VectorParams(
+            vectors_config=qmodels.VectorParams(
                 size=settings.EMBED_DIM,
-                distance=Distance.COSINE,
+                distance=qmodels.Distance.COSINE,
             ),
         )
     return client
 
 
-def get_vectorstore(
-    client: Optional[QdrantClient] = None,
-    embeddings: Optional[HuggingFaceEmbeddings] = None,
-) -> QdrantVectorStore:
-    """
-    Build a LangChain vector store bound to the configured collection.
-    """
+def get_vectorstore(client: Optional[QdrantClient] = None, embeddings: Optional[HuggingFaceEmbeddings] = None):
+    """Return a LangChain Qdrant vectorstore (updated API)."""
     client = client or init_qdrant()
     embeddings = embeddings or HuggingFaceEmbeddings(model_name=settings.EMBED_MODEL)
+    # Use modern QdrantVectorStore API with 'embedding' (singular)
     return QdrantVectorStore(
-        client=client,
-        collection_name=settings.QDRANT_COLLECTION,
-        embeddings=embeddings,
+        client=client, 
+        collection_name=settings.QDRANT_COLLECTION, 
+        embedding=embeddings  # Changed from 'embeddings' to 'embedding'
     )
 
 

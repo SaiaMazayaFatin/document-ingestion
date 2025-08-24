@@ -13,6 +13,8 @@ datasets>=2.19.0
 librosa>=0.10.2
 soundfile>=0.12.1
 pydub>=0.25.1
+accelerate>=0.30.0   # optimize HF models (device placement, etc.)
+sentencepiece>=0.1.99  # some embedding / tokenizer models (e.g. Qwen) need this
 
 # Vector DB
 qdrant-client>=1.9.2
@@ -28,4 +30,5 @@ psycopg2-binary>=2.9.9
 # Utils
 python-dotenv>=1.0.1
 pydantic>=2.8.2
+pydantic-settings>=2.3.0
 numpy>=1.26.4

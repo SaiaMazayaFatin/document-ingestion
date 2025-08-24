@@ -30,11 +30,14 @@ rag-multimodal-indexing/
 │  └─ prompts/
 │
 ├─ chunking/
-│  ├─ splitter.py
-│  └─ splitter_semantic.py              # opsional
+│  ├─ audio_chunker.py
+│  ├─ document_chunker.py
+│  ├─ image_chunker.py
+│  ├─ video_chunker.py
+│  └─ dispatcher.py                     # pilih strategi per modality
 │
-├─ embeddings/
-│  └─ text_embed.py                     # wrapper embedding HF
+├─ embeddings/                          # (dihapus - integrasi langsung di Qdrant)
+│  └─ (deprecated)
 │
 ├─ db/
 │  ├─ sql.py                            # Postgres (documents, chunks, vdb_refs, gdb_triples)
@@ -66,7 +69,9 @@ rag-multimodal-indexing/
 │  ├─ graph_docs.py
 │  └─ dispatcher.py                     # pilih graph sesuai ekstensi
 │
-├─ data/                                # (ignored; simpan contoh via data/README.md)
-│  └─ README.md
+├─ data/                                # contoh data; struktur real-time
+│  ├─ raw/
+│  ├─ interim/
+│  └─ processed/
 │
 └─ .gitignore

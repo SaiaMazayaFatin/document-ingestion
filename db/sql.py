@@ -91,13 +91,25 @@ def tx(engine: Engine) -> Iterable[Connection]:
 
 
 def insert_document(engine: Engine, documents_tbl: Table, doc: Dict[str, Any]) -> None:
-    with tx(engine) as conn:
-        conn.execute(documents_tbl.insert().values(**doc))
+    print(f"[sql] Inserting document: doc_id={doc.get('doc_id', 'unknown')}, title={doc.get('title', 'N/A')[:50]}...")
+    try:
+        with tx(engine) as conn:
+            conn.execute(documents_tbl.insert().values(**doc))
+        print(f"[sql] ✓ Successfully inserted document: {doc.get('doc_id', 'unknown')}")
+    except Exception as e:
+        print(f"[sql] ✗ Error inserting document {doc.get('doc_id', 'unknown')}: {e}")
+        raise
 
 
 def insert_chunk(engine: Engine, chunks_tbl: Table, row: Dict[str, Any]) -> None:
-    with tx(engine) as conn:
-        conn.execute(chunks_tbl.insert().values(**row))
+    print(f"[sql] Inserting chunk: chunk_id={row.get('chunk_id', 'unknown')}, doc_id={row.get('doc_id', 'unknown')}")
+    try:
+        with tx(engine) as conn:
+            conn.execute(chunks_tbl.insert().values(**row))
+        print(f"[sql] ✓ Successfully inserted chunk: {row.get('chunk_id', 'unknown')}")
+    except Exception as e:
+        print(f"[sql] ✗ Error inserting chunk {row.get('chunk_id', 'unknown')}: {e}")
+        raise
 
 
 def insert_vdb_ref(
@@ -107,15 +119,21 @@ def insert_vdb_ref(
     dim: int,
     collection: str,
 ) -> None:
-    with tx(engine) as conn:
-        conn.execute(
-            vdb_tbl.insert().values(
-                chunk_id=chunk_id,
-                collection=collection,
-                vector_dim=dim,
-                inserted_at=datetime.now(timezone.utc),
+    print(f"[sql] Inserting VDB reference: chunk_id={chunk_id}, collection={collection}, dim={dim}")
+    try:
+        with tx(engine) as conn:
+            conn.execute(
+                vdb_tbl.insert().values(
+                    chunk_id=chunk_id,
+                    collection=collection,
+                    vector_dim=dim,
+                    inserted_at=datetime.now(timezone.utc),
+                )
             )
-        )
+        print(f"[sql] ✓ Successfully inserted VDB reference for chunk: {chunk_id}")
+    except Exception as e:
+        print(f"[sql] ✗ Error inserting VDB reference for chunk {chunk_id}: {e}")
+        raise
 
 
 def insert_triple(
@@ -126,16 +144,22 @@ def insert_triple(
     chunk_id: str,
 ) -> None:
     from uuid import uuid4
-    with tx(engine) as conn:
-        conn.execute(
-            gdb_tbl.insert().values(
-                triple_id=str(uuid4()),
-                s=tri.s,
-                p=tri.p,
-                o=tri.o,
-                doc_id=doc_id,
-                chunk_id=chunk_id,
-                confidence=int(tri.confidence * 100),
-                created_at=datetime.now(timezone.utc),
+    print(f"[sql] Inserting triple: {tri.s} --[{tri.p}]--> {tri.o} (confidence: {tri.confidence:.2f})")
+    try:
+        with tx(engine) as conn:
+            conn.execute(
+                gdb_tbl.insert().values(
+                    triple_id=str(uuid4()),
+                    s=tri.s,
+                    p=tri.p,
+                    o=tri.o,
+                    doc_id=doc_id,
+                    chunk_id=chunk_id,
+                    confidence=int(tri.confidence * 100),
+                    created_at=datetime.now(timezone.utc),
+                )
             )
-        )
+        print(f"[sql] ✓ Successfully inserted triple for doc_id={doc_id}, chunk_id={chunk_id}")
+    except Exception as e:
+        print(f"[sql] ✗ Error inserting triple for chunk {chunk_id}: {e}")
+        raise
